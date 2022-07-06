@@ -1,0 +1,116 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: zddi-web-ci-pipeline
+  namespace: cicd
+spec:
+  workspaces:
+    - name: repo
+  params:
+    - name: project_name
+      type: string
+      description: project name
+      default: zddiv3-web
+    - name: repository_url
+      type: string
+      default: ''
+    - name: revision
+      type: string
+      default: master
+    - name: ref
+      type: string
+      default: refs/origin/master
+    - name: user_name
+      type: string
+      description: gitlab user display name
+      default: 'bot'
+    - name: user_username
+      type: string
+      description: git username
+      default: webbot
+    - name: user_email
+      type: string
+      description: gitlab user email
+      default: zddiweb@zdns.cn
+  tasks:
+    - name: clone
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: repo
+      params:
+        - name: url
+          value: $(params.repository_url)
+        - name: revision
+          value: $(params.revision)
+        - name: submodules
+          value: "false"
+    - name: install
+      taskRef:
+        name: yarn-install
+      runAfter:
+        - clone
+      workspaces:
+        - name: repo
+          workspace: repo
+    - name: lint
+      taskRef:
+        name: yarn-run
+      runAfter:
+        - install
+      params:
+        - name: cmd
+          value: lint
+      workspaces:
+        - name: repo
+          workspace: repo
+    - name: build
+      taskRef:
+        name: yarn-run
+      runAfter:
+        - install
+      params:
+        - name: cmd
+          value: build
+      workspaces:
+        - name: repo
+          workspace: repo
+    - name: push
+      taskRef:
+        name: push-build
+      runAfter:
+        - build
+      workspaces:
+        - name: repo
+          workspace: repo
+      params:
+        - name: user_name
+          value: $(params.user_name)
+        - name: revision
+          value: $(params.revision)
+        - name: ref
+          value: $(params.ref)
+    - name: report
+      taskRef:
+        name: report
+      params:
+        - name: user_name
+          value: $(params.user_name)
+        - name: ref
+          value: $(params.ref)
+      runAfter:
+        - lint
+        - build
+        - push
+      workspaces:
+        - name: repo
+          workspace: repo
+    - name: clean
+      taskRef:
+        name: clean
+      runAfter:
+        - report
+      workspaces:
+        - name: repo
+          workspace: repo

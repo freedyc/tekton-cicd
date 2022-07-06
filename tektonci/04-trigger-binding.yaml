@@ -1,0 +1,26 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: gitlab-push-event-bindings
+  namespace: cicd
+spec:
+  params:
+  - name: project_name
+    value: $(body.project.name)
+  - name: revision
+    value: $(body.checkout_sha)
+  - name: repository_url
+    value: $(body.repository.url)
+  - name: before
+    value: $(body.before)
+  - name: after
+    value: $(body.after)
+  - name: user_name
+    value: $(body.user_name)
+  - name: user_username
+    value: $(body.user_username)
+  - name: user_email
+    value: $(body.user_email)
+  - name: ref
+    value: $(body.ref)
+

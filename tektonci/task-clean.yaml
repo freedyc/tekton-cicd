@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: clean
+  namespace: cicd
+spec:
+  workspaces:
+    - name: repo
+  steps:
+    - name: cleanup
+      workingDir: $(workspaces.repo.path)
+      image: node:12-alpine
+      script: |
+        #!/bin/sh
+        time_start=$(date +%s)
+        REPO=$(workspaces.repo.path)
+        echo "REPO: ${REPO}"
+        rm -rf node_modules  bin .git public assets
+        RESULT=$?
+        time_end=$(($(date +%s) - $time_start))
+        echo "[Clean up complete] in ${time_end} seconds"
+        test "$RESULT" != 0 || exit $RESULT

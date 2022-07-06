@@ -1,0 +1,169 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pipeline-run-role
+  namespace: cicd
+rules:
+# Permissions for every EventListener deployment to function
+- apiGroups: ["triggers.tekton.dev", "tekton.dev"]
+  resources: ["clustertriggerbindings", "eventlisteners", "triggerbindings", "triggertemplates", "triggers", "clusterinterceptors"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  # secrets are only needed for GitHub/GitLab interceptors
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+# Permissions to create resources in associated TriggerTemplates
+- apiGroups: ["tekton.dev", "triggers.tekton.dev"]
+  resources: ["pipelineruns", "pipelineresources", "taskruns"]
+  verbs: ["get","create","update","delete"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pipeline-run-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pipeline-run-role
+subjects:
+- kind: ServiceAccount
+  name: tekton-triggers-sa
+  namespace: cicd
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pipeline-run-service
+  namespace: cicd
+secrets:
+  - name: regcred
+  - name: ssh-key
+
+---
+
+apiVersion: v1
+data:
+  .dockerconfigjson: e30K
+kind: Secret
+metadata:
+  name: regcred
+  namespace: cicd
+type: kubernetes.io/dockerconfigjson
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ssh-key
+  namespace: cicd
+  annotations:
+    tekton.dev/git-0: git.zdns.cn # Described below
+type: kubernetes.io/ssh-auth
+data:
+  ssh-privatekey: ''
+  # This is non-standard, but its use is encouraged to make this more secure.
+  known_hosts: ''
+
+
+
+---
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tekton-triggers-role
+  namespace: cicd
+rules:
+# Permissions for every EventListener deployment to function
+- apiGroups: ["triggers.tekton.dev"]
+  resources: ["eventlisteners", "triggerbindings", "triggertemplates"]
+  verbs: ["get"]
+- apiGroups: [""]
+  # secrets are only needed for Github/Gitlab interceptors, serviceaccounts only for per trigger authorization
+  resources: ["configmaps", "secrets", "serviceaccounts"]
+  verbs: ["get", "list", "watch"]
+# Permissions to create resources in associated TriggerTemplates
+- apiGroups: ["tekton.dev"]
+  resources: ["pipelineruns", "pipelineresources", "taskruns"]
+  verbs: ["create"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+# This role binding allows "jane" to read pods in the "default" namespace.
+# You need to already have a Role named "pod-reader" in that namespace.
+kind: RoleBinding
+metadata:
+  name: tekton-triggers-rolebinding
+  namespace: cicd
+subjects:
+# You can specify more than one "subject"
+- kind: ServiceAccount
+  name: tekton-triggers-sa
+roleRef:
+  # "roleRef" specifies the binding to a Role / ClusterRole
+  kind: Role #this must be Role or ClusterRole
+  name: tekton-triggers-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tekton-triggers-sa
+  namespace: cicd
+secrets:
+  - name: regcred
+  - name: ssh-key
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pipeline-garbage-collector-role
+rules:
+- apiGroups:
+  - tekton.dev
+  resources:
+  - taskruns
+  - pipelineruns
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pipeline-garbage-collector-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pipeline-garbage-collector-role
+subjects:
+- kind: ServiceAccount
+  name: pipeline-garbage-collector-service
+  namespace: cicd
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pipeline-garbage-collector-service
+  namespace: cicd
+secrets:
+  - name: regcred

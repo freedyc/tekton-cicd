@@ -1,0 +1,36 @@
+
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: yarn-install
+  namespace: cicd
+spec:
+  workspaces:
+    - name: repo
+  steps:
+    - name: install
+      workingDir: $(workspaces.repo.path)
+      image: node:12
+      script: |
+        #!/bin/sh
+        time_start=$(date +%s)
+        REPO=$(workspaces.repo.path)
+        echo "REPO: ${REPO}"
+        yarn || rm -rf yarn.lock && yarn
+        RESULT=$?
+        time_end=$(($(date +%s) - $time_start))
+        echo "[Install complete] in ${time_end} seconds"
+        test "$RESULT" == 0 || exit $RESULT
+      volumeMounts:
+        - name: yarnrc
+          mountPath: /tekton/home/.yarnrc
+          subPath: config
+        - name: yarn-cache
+          mountPath: /yarn-cache
+  volumes:
+    - name: yarnrc
+      configMap:
+        name: yarnrc
+    - name: yarn-cache
+      persistentVolumeClaim:
+        claimName: yarn-cache

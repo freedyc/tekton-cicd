@@ -1,0 +1,36 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: report
+  namespace: cicd
+spec:
+  params:
+    - name: user_name
+      description: user display name
+      default: 'root'
+    - name: ref
+      description: git reference
+      default: ''
+  workspaces:
+    - name: repo
+  steps:
+    - name: send
+      image: python:3.8-alpine
+      script: |-
+        #!/usr/bin/env python3
+        import json, os
+        from urllib import request
+        wxUrl = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=313b0641-124f-4797-b51a-a6768d318726"
+
+        def sendMsg(content):
+          data = json.dumps({ "msgtype": "text", "text": { "content": content, "mentioned_list": "[@all]" }}, ensure_ascii=False)
+          print(data)
+          data = bytes(data, 'utf8')
+          headers = { 'Content-Type': 'application/json' }
+          req = request.Request(url=wxUrl, headers=headers, data=data)
+          res = request.urlopen(req)
+          print(res.read().decode())
+
+        user="$(params.user_name)"
+        ref="$(params.ref)"
+        sendMsg("构建成功, 用户 %s 分支 %s" % (user, ref))

@@ -1,0 +1,45 @@
+
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: push-build
+  namespace: cicd
+spec:
+  results:
+    - name: output
+      description: task run output
+    - name: result
+      description: task run result
+  params:
+    - name: user_name
+      description: user display name
+    - name: revision
+      description: git revision
+    - name: ref
+      description: git reference
+  workspaces:
+    - name: repo
+  steps:
+    - name: push
+      workingDir: $(workspaces.repo.path)
+      image: dengyongchao/curl-make-git:zddi-web
+      script: |
+        #!/bin/sh
+        if test -x bin/hash_linux
+        then
+          echo "New version, auto save package" | tee -a $(results.output.path) | tee -a push.log
+          make tar | tee -a $(results.output.path) | tee -a push.log
+          branch=`echo $(params.ref) | sed 's;/;_;g'`
+          make ciupload USERNAME=$(params.user_name) COMMIT=$(params.revision) BRANCH=${branch} | tee -a $(results.output.path) | tee -a push.log
+          if [ $? -eq "0" ]
+          then
+            echo -n "true" | tee $(results.result.path)
+          else
+            echo -n "false" | tee $(results.result.path)
+          fi
+        else
+          echo "Old version, need to upload manually" | tee -a $(results.output.path) | tee -a push.log
+          exit 1
+          # todo send message to weChat
+        fi
+        echo $? | tee $(results.result.path)

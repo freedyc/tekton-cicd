@@ -1,0 +1,40 @@
+
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: yarn-run
+  namespace: cicd
+spec:
+  params:
+    - name: cmd
+      type: string
+      default: lint
+  results:
+    - name: output
+      description: task run output
+    - name: result
+      description: task run result
+  workspaces:
+    - name: repo
+  steps:
+    - name: run
+      workingDir: $(workspaces.repo.path)
+      image: node:12
+      script: |
+        #!/bin/sh
+        REPO=$(workspaces.repo.path)
+        yarn run $(params.cmd) | tee $(params.cmd)-log.txt
+        echo $? | tee $(results.result.path)
+      volumeMounts:
+        - name: yarnrc
+          mountPath: /tekton/home/.yarnrc
+          subPath: config
+        - name: yarn-cache
+          mountPath: /yarn-cache
+  volumes:
+    - name: yarnrc
+      configMap:
+        name: yarnrc
+    - name: yarn-cache
+      persistentVolumeClaim:
+        claimName: yarn-cache

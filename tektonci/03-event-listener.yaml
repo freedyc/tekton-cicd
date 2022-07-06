@@ -1,0 +1,106 @@
+
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: zddiv3-web-push-pipeline
+  namespace: cicd
+spec:
+  params:
+  - name: project_name
+    description: Project Name
+    default: zddiv3-web
+  - name: revision
+    description: The git revision
+    default: master
+  - name: repository_url
+    description: The git repository url
+    default: ''
+  - name: user_name
+    description: The gitlab user display name
+    default: ''
+  - name: user_username
+    default: ''
+  - name: user_email
+    description: The gitlab user email
+    default: ''
+  - name: ref
+    description: The git commit ref
+    default: ''
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: web-push-pipeline-run-
+        namespace: cicd
+      spec:
+          serviceAccountName: pipeline-run-service
+          pipelineRef:
+            name: zddi-web-ci-pipeline
+          timeout: "2h0m0s"
+          workspaces:
+            - name: repo
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: nfs-client
+                  accessModes:
+                    - ReadWriteMany
+                  resources:
+                    requests:
+                      storage: 1Gi
+          params:
+            - name: project_name
+              value: $(tt.params.project_name)
+            - name: repository_url
+              value: $(tt.params.repository_url)
+            - name: revision
+              value: $(tt.params.revision)
+            - name: ref
+              value: $(tt.params.ref)
+            - name: user_name
+              value: $(tt.params.user_name)
+            - name: user_username
+              value: $(tt.params.user_username)
+            - name: user_email
+              value: $(tt.params.user_email)
+
+---
+
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: gitlab-listener
+  namespace: cicd
+spec:
+  serviceAccountName: tekton-triggers-sa
+  triggers:
+    - name: gitlab-push-events-trigger
+      interceptors:
+        - ref:
+            name: "gitlab"
+          params:
+            - name: "secretRef"
+              value:
+                secretName: gitlab-secret
+                secretKey: secretToken
+            - name: "eventTypes"
+              value: ["Push Hook"]
+
+      bindings:
+        - ref: gitlab-push-event-bindings
+      template:
+        ref: zddiv3-web-push-pipeline
+    - name: pipeline-event
+      interceptors:
+        - ref:
+            name: "gitlab"
+          params:
+            - name: "secretRef"
+              value:
+                secretName: gitlab-secret
+                secretKey: secretToken
+            - name: "eventTypes"
+              value: ["Pipeline Hook"]
+      bindings:
+        - ref: gitlab-pipeline-event-bindings
+      template:
+        ref: zddi-web-build-pipeline
