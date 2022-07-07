@@ -9,6 +9,10 @@ spec:
     - name: cmd
       type: string
       default: lint
+    - name: node_image
+      type: string
+      default: 'node:12'
+      description: 'node version'
   results:
     - name: output
       description: task run output
@@ -19,7 +23,7 @@ spec:
   steps:
     - name: run
       workingDir: $(workspaces.repo.path)
-      image: node:12
+      image: "$(params.node_image)"
       script: |
         #!/bin/sh
         REPO=$(workspaces.repo.path)

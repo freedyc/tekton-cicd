@@ -115,6 +115,8 @@ spec:
       description: The precise commit SHA that was fetched by this Task.
     - name: url
       description: The precise URL that was fetched by this Task.
+    - name: 'node_image'
+      description: 'node image version'
   steps:
     - name: clone
       image: "$(params.gitInitImage)"
@@ -235,3 +237,11 @@ spec:
         fi
         printf "%s" "${RESULT_SHA}" > "$(results.commit.path)"
         printf "%s" "${PARAM_URL}" > "$(results.url.path)"
+
+        if [ ! -f ".nvmrc" ]; then
+          printf "%s" "node:12" > "$(results.node_image.path)"
+        else
+          NODE_VERSION=`cat .nvmrc | sed 's/v//'`
+          DOCKER_NAME="node:${NODE_VERSION}"
+          printf "%s" "${DOCKER_NAME}" > "$(results.node_image.path)"
+        fi

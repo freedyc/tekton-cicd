@@ -51,6 +51,9 @@ spec:
         name: yarn-install
       runAfter:
         - clone
+      params:
+        - name: node_image
+          value: "$(tasks.clone.results.node_image)"
       workspaces:
         - name: repo
           workspace: repo
@@ -62,6 +65,8 @@ spec:
       params:
         - name: cmd
           value: lint
+        - name: node_image
+          value: "$(tasks.clone.results.node_image)"
       workspaces:
         - name: repo
           workspace: repo
@@ -73,6 +78,8 @@ spec:
       params:
         - name: cmd
           value: build
+        - name: node_image
+          value: "$(tasks.clone.results.node_image)"
       workspaces:
         - name: repo
           workspace: repo

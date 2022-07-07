@@ -7,10 +7,15 @@ metadata:
 spec:
   workspaces:
     - name: repo
+  params:
+    - name: node_image
+      type: string
+      default: 'node:12'
+      description: 'node version'
   steps:
     - name: install
       workingDir: $(workspaces.repo.path)
-      image: node:12
+      image: "$(params.node_image)"
       script: |
         #!/bin/sh
         time_start=$(date +%s)
@@ -21,6 +26,7 @@ spec:
         time_end=$(($(date +%s) - $time_start))
         echo "[Install complete] in ${time_end} seconds"
         test "$RESULT" == 0 || exit $RESULT
+
       volumeMounts:
         - name: yarnrc
           mountPath: /tekton/home/.yarnrc
