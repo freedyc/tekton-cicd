@@ -11,7 +11,7 @@ spec:
       default: lint
     - name: node_image
       type: string
-      default: 'node:12'
+      default: 'node:12.22.12'
       description: 'node version'
   results:
     - name: output

@@ -239,7 +239,7 @@ spec:
         printf "%s" "${PARAM_URL}" > "$(results.url.path)"
 
         if [ ! -f ".nvmrc" ]; then
-          printf "%s" "node:12" > "$(results.node_image.path)"
+          printf "%s" "node:12.22.12" > "$(results.node_image.path)"
         else
           NODE_VERSION=`cat .nvmrc | sed 's/v//'`
           DOCKER_NAME="node:${NODE_VERSION}"

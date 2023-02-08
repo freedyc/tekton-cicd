@@ -6,7 +6,7 @@ metadata:
 rules:
 # Permissions for every EventListener deployment to function
 - apiGroups: ["triggers.tekton.dev", "tekton.dev"]
-  resources: ["clustertriggerbindings", "eventlisteners", "triggerbindings", "triggertemplates", "triggers", "clusterinterceptors"]
+  resources: ["clustertriggerbindings", "eventlisteners", "triggerbindings", "triggertemplates", "triggers", "clusterinterceptors", "interceptors"]
   verbs: ["get", "list", "watch"]
 - apiGroups: [""]
   # secrets are only needed for GitHub/GitLab interceptors
@@ -65,7 +65,7 @@ metadata:
     tekton.dev/git-0: git.zdns.cn # Described below
 type: kubernetes.io/ssh-auth
 data:
-  ssh-privatekey: ''
+  ssh-privatekey: 'emRucwo='
   # This is non-standard, but its use is encouraged to make this more secure.
   known_hosts: ''
 
@@ -81,7 +81,7 @@ metadata:
 rules:
 # Permissions for every EventListener deployment to function
 - apiGroups: ["triggers.tekton.dev"]
-  resources: ["eventlisteners", "triggerbindings", "triggertemplates"]
+  resources: ["eventlisteners", "triggerbindings", "triggertemplates", "interceptors"]
   verbs: ["get"]
 - apiGroups: [""]
   # secrets are only needed for Github/Gitlab interceptors, serviceaccounts only for per trigger authorization

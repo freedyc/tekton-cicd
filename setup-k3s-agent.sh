@@ -10,5 +10,4 @@ curl -sfL https://get.k3s.io | \
 	K3S_URL=$K3S_URL K3S_TOKEN=$K3S_TOKEN \
 	INSTALL_K3S_EXEC="agent" \
 	sh -s - \
-	--disable=servicelb \
 	--node-name=node227 \

@@ -10,7 +10,7 @@ spec:
   params:
     - name: node_image
       type: string
-      default: 'node:12'
+      default: 'node:12.22.12'
       description: 'node version'
   steps:
     - name: install
