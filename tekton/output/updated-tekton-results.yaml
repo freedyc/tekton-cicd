@@ -279,7 +279,7 @@ spec:
               value: postgres-service.tekton-pipelines.svc.cluster.local
             - name: DB_NAME
               value: tekton-results
-          image: docker.io/dengyongchao/tekton-results-api:v0.3.0
+          image: docker.io/dengyongchao/tekton-api:v0.3.0
           name: tekton-results-api
           volumeMounts:
             - mountPath: /etc/tls
@@ -329,7 +329,7 @@ spec:
             - tekton-results-api-service.tekton-pipelines.svc.cluster.local:50051
             - -auth_mode
             - token
-          image: docker.io/dengyongchao/tekton-results-watcher:v0.3.0
+          image: docker.io/dengyongchao/tekton-watcher:v0.3.0
           name: tekton-results-watcher
           volumeMounts:
             - mountPath: /etc/tls
