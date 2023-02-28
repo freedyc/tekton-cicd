@@ -119,5 +119,16 @@ const fullDashboardImages = getImages(
     'tekton-'
 )
 
-updateImages(fullDashboardImages);
+// updateImages(fullDashboardImages);
+
+
+
+const resultsImages = getImages(
+    'results.yaml',
+    /gcr\.io\/tekton-releases[/A-Za-z0-9:@\.]+/g,
+    'gcr.io/tekton-releases/github.com/tektoncd/results/cmd/',
+    'tekton-'
+)
+
+updateImages(resultsImages);
 
