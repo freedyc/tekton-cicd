@@ -81,7 +81,7 @@ const triggerImages = getImages(
 )
 // console.log(triggerImages);
 
-updateImages(triggerImages);
+// updateImages(triggerImages);
 
 const interceptorsImages = getImages(
     'triggers-interceptors.yaml', 
@@ -124,10 +124,10 @@ const fullDashboardImages = getImages(
 
 
 const resultsImages = getImages(
-    'results.yaml',
+    'tekton-results.yaml',
     /gcr\.io\/tekton-releases[/A-Za-z0-9:@\.]+/g,
     'gcr.io/tekton-releases/github.com/tektoncd/results/cmd/',
-    'tekton-'
+    'tekton-results-'
 )
 
 updateImages(resultsImages);
