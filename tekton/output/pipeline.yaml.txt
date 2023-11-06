@@ -1,8 +1,8 @@
-docker.io/dengyongchao/tekton-pipeline-controller:v0.53.0
-docker.io/dengyongchao/tekton-pipeline-entrypoint:v0.53.0
-docker.io/dengyongchao/tekton-pipeline-nop:v0.53.0
-docker.io/dengyongchao/tekton-pipeline-sidecarlogresults:v0.53.0
-docker.io/dengyongchao/tekton-pipeline-workingdirinit:v0.53.0
-docker.io/dengyongchao/tekton-pipeline-events:v0.53.0
-docker.io/dengyongchao/tekton-pipeline-resolvers:v0.53.0
-docker.io/dengyongchao/tekton-pipeline-webhook:v0.53.0
+docker.io/dengyongchao/tekton-pipeline-controller:v0.49.0
+docker.io/dengyongchao/tekton-pipeline-entrypoint:v0.49.0
+docker.io/dengyongchao/tekton-pipeline-nop:v0.49.0
+docker.io/dengyongchao/tekton-pipeline-sidecarlogresults:v0.49.0
+docker.io/dengyongchao/tekton-pipeline-workingdirinit:v0.49.0
+docker.io/dengyongchao/tekton-pipeline-events:v0.49.0
+docker.io/dengyongchao/tekton-pipeline-resolvers:v0.49.0
+docker.io/dengyongchao/tekton-pipeline-webhook:v0.49.0
