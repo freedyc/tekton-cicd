@@ -1,1 +1,1 @@
-docker.io/dengyongchao/tekton-dashboard:v0.33.0
+docker.io/dengyongchao/tekton-dashboard:v0.40.0
