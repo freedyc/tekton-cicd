@@ -30,7 +30,8 @@ spec:
           echo "New version, auto save package" | tee -a $(results.output.path) | tee -a push.log
           make tar | tee -a $(results.output.path) | tee -a push.log
           branch=`echo $(params.ref) | sed 's;/;_;g'`
-          make ciupload USERNAME=$(params.user_name) COMMIT=$(params.revision) BRANCH=${branch} | tee -a $(results.output.path) | tee -a push.log
+          user_name=`echo $(params.user_name) | sed 's;\s;;g'`
+          make ciupload USERNAME=${user_name} COMMIT=$(params.revision) BRANCH=${branch} | tee -a $(results.output.path) | tee -a push.log
           if [ $? -eq "0" ]
           then
             echo -n "true" | tee $(results.result.path)

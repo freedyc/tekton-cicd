@@ -31,9 +31,9 @@ spec:
             - name: NFS_SERVER
               value: 10.1.107.226
             - name: NFS_PATH
-              value: /export/cicd
+              value: /nfs_extend/cicd
       volumes:
         - name: nfs-client-root
           nfs:
             server: 10.1.107.226
-            path: /export/cicd
+            path: /nfs_extend/cicd
