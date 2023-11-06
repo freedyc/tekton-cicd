@@ -1,1 +1,1 @@
-docker.io/dengyongchao/tekton-triggers-interceptors-interceptors:v0.22.0
+docker.io/dengyongchao/tekton-triggers-interceptors-interceptors:v0.25.0

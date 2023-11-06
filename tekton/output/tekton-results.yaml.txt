@@ -1,2 +1,2 @@
-docker.io/dengyongchao/tekton-results-api:v0.3.0
-docker.io/dengyongchao/tekton-results-watcher:v0.3.0
+docker.io/dengyongchao/tekton-results-api:v0.8.1
+docker.io/dengyongchao/tekton-results-watcher:v0.8.1

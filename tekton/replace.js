@@ -43,7 +43,7 @@ const  pipelineImages = getImages(
     'tekton-pipeline-'
 )
 
-// updateImages(pipelineImages);
+updateImages(pipelineImages);
 
 const  pipeline1Images = getImages(
     'output/updated-pipeline.yaml', 
@@ -52,9 +52,9 @@ const  pipeline1Images = getImages(
     'tekton-pipeline-',
     ''
 )
-// console.log(pipeline1Images);
+console.log(pipeline1Images);
 
-// updateImages(pipeline1Images);
+updateImages(pipeline1Images);
 
 
 
@@ -66,9 +66,9 @@ const  pipeline2Images = getImages(
     '',
 )
 
-// console.log(pipeline2Images);
+console.log(pipeline2Images);
 
-// updateImages(pipeline2Images);
+ updateImages(pipeline2Images);
 
 /**
  * Triggers
@@ -79,9 +79,9 @@ const triggerImages = getImages(
     'gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/',
     'tekton-triggers-'
 )
-// console.log(triggerImages);
+console.log(triggerImages);
 
-// updateImages(triggerImages);
+updateImages(triggerImages);
 
 const interceptorsImages = getImages(
     'triggers-interceptors.yaml', 
@@ -90,9 +90,9 @@ const interceptorsImages = getImages(
     'tekton-triggers-interceptors-'
 )
 
-// console.log(interceptorsImages);
+console.log(interceptorsImages);
 
-// updateImages(interceptorsImages);
+updateImages(interceptorsImages);
 
 
 
@@ -108,9 +108,9 @@ const dashboardImages = getImages(
     'tekton-dashboard-'
 )
 
-// console.log(dashboardImages);
+console.log(dashboardImages);
 
-// updateImages(dashboardImages);
+updateImages(dashboardImages);
 
 const fullDashboardImages = getImages(
     'tekton-full-dashboard.yaml',
@@ -119,7 +119,7 @@ const fullDashboardImages = getImages(
     'tekton-'
 )
 
-// updateImages(fullDashboardImages);
+updateImages(fullDashboardImages);
 
 
 
